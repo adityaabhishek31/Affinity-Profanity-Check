@@ -1,9 +1,10 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 
-public class profanityCheck {
+public class ProfanityChecking {
     static class Node {
         String key;
         Node left, right;
@@ -21,6 +22,7 @@ public class profanityCheck {
     }
     static Node insert_Recursive(Node root, String key) {
         //tree is empty
+
         if (root == null) {
             root = new Node(key);
             return root;
@@ -34,15 +36,14 @@ public class profanityCheck {
         return root;
     }
 
-
-    boolean search(String key)  {
+    static boolean search(String key)  {
         root = search_Recursive(root, key);
         if (root!= null)
             return true;
         else
             return false;
     }
-    Node search_Recursive(Node root, String key)  {
+    static Node search_Recursive(Node root, String key)  {
         // Base Cases: root is null or key is present at root
         if (root==null || root.key==key)
             return root;
@@ -52,6 +53,7 @@ public class profanityCheck {
         // val is less than root's key
         return search_Recursive(root.right, key);
     }
+
     static void inorder() {
         inorder_Recursive(root);
     }
@@ -64,9 +66,25 @@ public class profanityCheck {
             inorder_Recursive(root.right);
         }
     }
-
-    static void profanity(String data2){
-
+    static int profanity(String data2){
+        int count = 1;
+        int prof = 0;
+        for (int i = 0; i < data2.length() - 1; i++)        //to get the total count of a sentence
+        {
+            if ((data2.charAt(i) == ' ') && (data2.charAt(i + 1) != ' ')) {
+                count++;
+            }
+        }
+        StringTokenizer st = new StringTokenizer(data2, " ");
+        while (st.hasMoreTokens()) {
+            boolean found=search((st.nextToken()).toLowerCase());
+            if(found==true){
+                prof++;
+            }
+        }
+        double degree_of_profanity = prof/count;
+        System.out.println(degree_of_profanity+" for \""+data2+"\"");
+        return 0;
     }
 
 
@@ -78,16 +96,18 @@ public class profanityCheck {
             Scanner myReader2 = new Scanner(myObj2);
             while (myReader2.hasNextLine()) {
                 String data = myReader2.nextLine();
-                //System.out.println(data);
-                insert(data);
+                System.out.println(data);
+                insert(data.toLowerCase());
 
             }
-//            while (myReader1.hasNextLine()) {
-//                String data2 = myReader1.nextLine();
-//                profanity(data2);
-//            }
-            myReader1.close();
             myReader2.close();
+            while (myReader1.hasNextLine()) {
+                String data2 = myReader1.nextLine();
+                profanity(data2);
+            }
+
+            myReader1.close();
+            inorder();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
